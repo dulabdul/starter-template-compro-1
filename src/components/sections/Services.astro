@@ -1,0 +1,53 @@
+---
+import { Card, CardHeader, CardTitle, CardContent } from '../ui/card';
+import { sanityClient } from '../../lib/sanity';
+
+// 1. Define the TypeScript interface matching your Sanity schema
+interface Service {
+  title: string;
+  description: string;
+  icon?: string; // Optional, since your fallback data doesn't use it
+  order?: number; // Optional
+}
+
+// 2. Apply the generic type <Service[]> to the Sanity fetch call
+const services = await sanityClient.fetch<Service[]>(
+  `*[_type == "service"] | order(order asc)`,
+);
+
+// 3. Explicitly type the fallback array
+const displayServices: Service[] =
+  services.length > 0
+    ? services
+    : [
+        { title: 'Consulting', description: 'Expert corporate strategy.' },
+        { title: 'Development', description: 'Scalable software solutions.' },
+        { title: 'Marketing', description: 'Data-driven growth.' },
+      ];
+---
+
+<section
+  id='services'
+  class='container mx-auto px-4 py-24 md:px-8'>
+  <div class='mb-12 text-center'>
+    <h2 class='text-3xl font-bold tracking-tight sm:text-4xl text-slate-900'>
+      Our Services
+    </h2>
+    <p class='mt-4 text-slate-600'>Delivering excellence across industries.</p>
+  </div>
+
+  <div class='grid grid-cols-1 gap-6 md:grid-cols-3'>
+    {
+      displayServices.map((service) => (
+        <Card className='shadow-sm hover:shadow-md transition-shadow'>
+          <CardHeader>
+            <CardTitle className='text-xl'>{service.title}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p class='text-slate-600'>{service.description}</p>
+          </CardContent>
+        </Card>
+      ))
+    }
+  </div>
+</section>

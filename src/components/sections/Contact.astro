@@ -1,0 +1,22 @@
+---
+const email = 'contact@corpbrand.com';
+const address = '123 Business Avenue, Suite 100, Metropolis';
+---
+
+<section
+  id='contact'
+  class='bg-slate-100 py-24'>
+  <div class='container mx-auto px-4 text-center md:px-8'>
+    <h2 class='text-3xl font-bold text-slate-900'>Get in Touch</h2>
+    <p class='mt-6 text-slate-600'>We are here to help your business grow.</p>
+
+    <div class='mt-8 flex flex-col items-center gap-4'>
+      <p class='text-lg font-medium'>{address}</p>
+      <a
+        href={`mailto:${email}`}
+        class='text-blue-600 hover:underline text-lg font-semibold'>
+        {email}
+      </a>
+    </div>
+  </div>
+</section>

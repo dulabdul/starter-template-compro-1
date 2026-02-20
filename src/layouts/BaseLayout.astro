@@ -1,0 +1,40 @@
+---
+// Astro Frontmatter: Executes AT BUILD TIME (or server-side). 
+// No JavaScript is shipped to the client from this block.
+import { sanityClient } from '../lib/sanity';
+
+const { title = "Corporate Profile", description = "Professional services." } = Astro.props;
+
+// Fetch SEO and Tracking settings from Sanity
+const query = `*[_type == "siteSettings"][0]`;
+const siteSettings = await sanityClient.fetch(query) || {};
+
+const metaTitle = siteSettings.title || title;
+const metaDesc = siteSettings.description || description;
+---
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={metaDesc} />
+    <title>{metaTitle}</title>
+    
+    <meta property="og:title" content={metaTitle} />
+    <meta property="og:description" content={metaDesc} />
+    
+    {siteSettings.gaId && (
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${siteSettings.gaId}`}></script>
+      <script define:vars={{ gaId: siteSettings.gaId }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', gaId);
+      </script>
+    )}
+    
+    </head>
+  <body class="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased">
+    <slot /> </body>
+</html>
