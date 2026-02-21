@@ -1,17 +1,41 @@
 ---
-// Astro Frontmatter: Executes AT BUILD TIME (or server-side). 
-// No JavaScript is shipped to the client from this block.
+// src/layouts/BaseLayout.astro
 import '../styles/global.css';
-import { sanityClient } from '../lib/sanity';
+import { sanityClient, urlFor } from '../lib/sanity'; // Pastikan urlFor di-import
 
-const { title = "Corporate Profile", description = "Professional services." } = Astro.props;
+// Props untuk menerima custom SEO per halaman (opsional)
+export interface Props {
+  title?: string;
+  description?: string;
+  image?: any;
+}
 
-// Fetch SEO and Tracking settings from Sanity
+const { title, description, image } = Astro.props;
+
+// Fetch Global Settings dari Sanity
 const query = `*[_type == "siteSettings"][0]`;
-const siteSettings = await sanityClient.fetch(query) || {};
+const siteSettings = (await sanityClient.fetch(query)) || {};
 
-const metaTitle = siteSettings.title || title;
-const metaDesc = siteSettings.description || description;
+// 1. Logika Resolusi Title (Contoh hasil: "Home | Best Corporate Agency")
+const brandName = siteSettings.title || 'Corporate Profile';
+const seoSuffix = siteSettings.seoTitleSuffix ? ` ${siteSettings.seoTitleSuffix}` : '';
+const finalTitle = title ? `${title} - ${brandName}` : `${brandName}${seoSuffix}`;
+
+// 2. Logika Meta Description & Keywords
+const finalDesc = description || siteSettings.description || 'Professional corporate services.';
+const finalKeywords = siteSettings.keywords || '';
+
+// 3. Resolusi Canonical URL (Penting agar tidak dianggap Duplicate Content oleh Google)
+const siteUrl = siteSettings.siteUrl || Astro.site || Astro.url.origin;
+const canonicalURL = new URL(Astro.url.pathname, siteUrl).toString();
+
+// 4. Resolusi Gambar Open Graph
+const imageSource = image || siteSettings.ogImage;
+const finalOgImage = imageSource ? urlFor(imageSource).width(1200).height(630).format('webp').url() : '';
+
+// 5. Indexing / Robots 
+const isIndexable = siteSettings.allowIndexing !== false; // Default true jika tidak diset
+const robotsContent = isIndexable ? 'index, follow' : 'noindex, nofollow';
 ---
 
 <!DOCTYPE html>
@@ -19,12 +43,41 @@ const metaDesc = siteSettings.description || description;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={metaDesc} />
-    <title>{metaTitle}</title>
     
-    <meta property="og:title" content={metaTitle} />
-    <meta property="og:description" content={metaDesc} />
+    <title>{finalTitle}</title>
+    <meta name="title" content={finalTitle} />
+    <meta name="description" content={finalDesc} />
+    {finalKeywords && <meta name="keywords" content={finalKeywords} />}
     
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="robots" content={robotsContent} />
+
+    {siteSettings.googleSiteVerification && (
+      <meta name="google-site-verification" content={siteSettings.googleSiteVerification} />
+    )}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={finalTitle} />
+    <meta property="og:description" content={finalDesc} />
+    <meta property="og:site_name" content={brandName} />
+    {finalOgImage && <meta property="og:image" content={finalOgImage} />}
+
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={finalTitle} />
+    <meta property="twitter:description" content={finalDesc} />
+    {finalOgImage && <meta property="twitter:image" content={finalOgImage} />}
+    {siteSettings.twitterHandle && <meta property="twitter:site" content={siteSettings.twitterHandle} />}
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": brandName,
+      "url": siteUrl,
+      "description": finalDesc
+    })} />
+
     {siteSettings.gaId && (
       <script async src={`https://www.googletagmanager.com/gtag/js?id=${siteSettings.gaId}`}></script>
       <script define:vars={{ gaId: siteSettings.gaId }}>
@@ -35,7 +88,8 @@ const metaDesc = siteSettings.description || description;
       </script>
     )}
     
-    </head>
+  </head>
   <body class="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased">
-    <slot /> </body>
+    <slot /> 
+  </body>
 </html>
