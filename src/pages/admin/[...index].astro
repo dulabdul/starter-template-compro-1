@@ -2,15 +2,15 @@
 // src/pages/admin/[...index].astro
 import SanityStudio from '@/components/SanityStudio';
 
-export function getStaticPaths() {
-  return [{ params: { index: undefined } }];
-}
+// Beritahu Astro bahwa rute ini adalah SSR (Server-Side), BUKAN Static
+export const prerender = false;
+
+// HAPUS fungsi getStaticPaths() sepenuhnya
 ---
 
 <SanityStudio client:only='react' />
 
 <style is:global>
-  /* Reset total untuk memastikan tidak ada gangguan layout */
   :root,
   html,
   body {
@@ -18,10 +18,9 @@ export function getStaticPaths() {
     width: 100vw !important;
     margin: 0 !important;
     padding: 0 !important;
-    overflow: hidden !important; /* Mencegah double scroll */
+    overflow: hidden !important;
   }
 
-  /* Memastikan Sanity rendering area mengambil sisa ruang */
   [data-ui='Root'] {
     height: 100vh !important;
   }
