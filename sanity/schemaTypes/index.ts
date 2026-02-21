@@ -5,8 +5,9 @@ import service from './service'
 import aboutUs from './aboutUs'
 import cultures from './cultures'
 import servicesSection from './servicesSection'
+import clientSection from './clientSection'
 
 
 
 // Pastikan ketiganya adalah hasil dari defineType({ ... })
-export const schemaTypes = [siteSettings, companyInfo, service, aboutUs, cultures,servicesSection]
+export const schemaTypes = [siteSettings, companyInfo, service, aboutUs, cultures,servicesSection, clientSection]

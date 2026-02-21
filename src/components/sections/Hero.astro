@@ -23,7 +23,7 @@ const data = await sanityClient.fetch<HeroData>(
   }`,
 );
 
-// 3. Setup Variabel & Fallbacks (Jika klien belum mengisi data di CMS)
+// 3. Setup Variabel & Fallbacks
 const brandName = data?.companyName || 'CorpBrand.';
 const heroImageUrl = data?.heroImage
   ? urlFor(data.heroImage).url()
@@ -39,38 +39,39 @@ const ctaPrimaryText = data?.heroCtaPrimary || 'Lihat Layanan Kami';
 const ctaSecondaryText = data?.heroCtaSecondary || 'Hubungi Kami';
 ---
 
-<section class='relative pt-16 pb-20 md:pb-32 bg-slate-50'>
+<section class='relative pt-32 md:pt-40 pb-20 md:pb-32 bg-slate-50'>
   <div class='container mx-auto px-4 md:px-8 flex flex-col items-center'>
     <div
-      class='w-full max-w-5xl h-[40vh] md:h-[60vh] overflow-hidden rounded-b-3xl md:rounded-3xl shadow-2xl relative'>
+      class='w-full max-w-5xl h-[50vh] md:h-[65vh] overflow-hidden rounded-3xl md:rounded-[2.5rem] shadow-2xl relative'>
       <img
         src={heroImageUrl}
         alt={`Hero Image ${brandName}`}
-        class='w-full h-full object-cover transition-transform duration-700 hover:scale-105'
+        class='w-full h-full object-cover transition-transform duration-1000 hover:scale-105'
       />
       <div class='absolute inset-0 bg-slate-900/10 mix-blend-multiply'></div>
     </div>
 
     <div
-      class='mt-12 md:mt-16 text-center max-w-3xl flex flex-col items-center'>
+      class='mt-12 md:mt-16 text-center max-w-4xl flex flex-col items-center'>
       <h1
-        class='hero-headline text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900'
+        class='hero-headline text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-slate-900 leading-[1.1]'
         set:html={headline}
       />
 
-      <p class='mt-6 text-lg md:text-xl text-slate-600 leading-relaxed'>
+      <p
+        class='mt-6 text-lg md:text-xl text-slate-600 leading-relaxed max-w-2xl'>
         {subHeadline}
       </p>
 
-      <div class='mt-10 flex flex-col sm:flex-row gap-4'>
+      <div class='mt-10 flex flex-col sm:flex-row gap-4 w-full sm:w-auto'>
         <a
           href='#services'
-          class='inline-flex h-12 items-center justify-center rounded-md bg-slate-900 px-8 text-sm font-medium text-slate-50 transition-colors hover:bg-slate-900/90 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2'>
+          class='inline-flex h-14 items-center justify-center rounded-full bg-slate-900 px-8 text-base font-medium text-slate-50 transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 w-full sm:w-auto shadow-md'>
           {ctaPrimaryText}
         </a>
         <a
           href='#contact'
-          class='inline-flex h-12 items-center justify-center rounded-md border border-slate-200 bg-white px-8 text-sm font-medium text-slate-900 transition-colors hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2'>
+          class='inline-flex h-14 items-center justify-center rounded-full border border-slate-200 bg-white px-8 text-base font-medium text-slate-900 transition-colors hover:bg-slate-50 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 w-full sm:w-auto shadow-sm'>
           {ctaSecondaryText}
         </a>
       </div>
