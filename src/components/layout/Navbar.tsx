@@ -1,9 +1,15 @@
+// src/components/layout/Navbar.tsx
 import React, { useState } from 'react';
 import { Menu } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 
-export default function Navbar() {
+// Definisikan props yang diterima
+interface NavbarProps {
+  companyName?: string;
+}
+
+export default function Navbar({ companyName = 'CorpBrand.' }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
@@ -17,8 +23,10 @@ export default function Navbar() {
   return (
     <header className="fixed top-0 z-50 w-full border-b bg-white/70 backdrop-blur-md transition-all">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-8">
+        
+        {/* Gunakan companyName dari props */}
         <a href="/" className="text-xl font-bold tracking-tight text-slate-900">
-          CorpBrand.
+          {companyName}
         </a>
 
         {/* Desktop Nav */}

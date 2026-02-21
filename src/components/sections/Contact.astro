@@ -1,6 +1,22 @@
 ---
-const email = 'contact@corpbrand.com';
-const address = '123 Business Avenue, Suite 100, Metropolis';
+// src/components/sections/Contact.astro
+import { sanityClient } from '@/lib/sanity';
+
+// 1. Buat tipe data sesuai schema Sanity
+interface CompanyInfo {
+  email: string;
+  address: string;
+}
+
+// 2. Fetch data (karena singleton, kita ambil index [0])
+const companyInfo = await sanityClient.fetch<CompanyInfo>(
+  `*[_type == "companyInfo"][0]`,
+);
+
+// 3. Pasang fallback jika data di Sanity masih kosong
+const email = companyInfo?.email || 'contact@corpbrand.com';
+const address =
+  companyInfo?.address || '123 Business Avenue, Suite 100, Metropolis';
 ---
 
 <section

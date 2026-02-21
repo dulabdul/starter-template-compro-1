@@ -1,0 +1,86 @@
+---
+import { sanityClient, urlFor } from '@/lib/sanity';
+
+// 1. Definisikan interface sesuai skema baru
+interface HeroData {
+  companyName: string;
+  heroImage?: any;
+  heroHeadline?: string;
+  heroSubHeadline?: string;
+  heroCtaPrimary?: string;
+  heroCtaSecondary?: string;
+}
+
+// 2. Fetch seluruh data yang dibutuhkan
+const data = await sanityClient.fetch<HeroData>(
+  `*[_type == "companyInfo"][0]{ 
+    companyName, 
+    heroImage, 
+    heroHeadline, 
+    heroSubHeadline, 
+    heroCtaPrimary, 
+    heroCtaSecondary 
+  }`,
+);
+
+// 3. Setup Variabel & Fallbacks (Jika klien belum mengisi data di CMS)
+const brandName = data?.companyName || 'CorpBrand.';
+const heroImageUrl = data?.heroImage
+  ? urlFor(data.heroImage).url()
+  : 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2000&auto=format&fit=crop';
+
+const headline =
+  data?.heroHeadline ||
+  `Membangun Masa Depan Bersama <span>${brandName}</span>`;
+const subHeadline =
+  data?.heroSubHeadline ||
+  'Kami menghadirkan solusi digital dan layanan profesional kelas atas untuk mengakselerasi pertumbuhan bisnis Anda di era modern.';
+const ctaPrimaryText = data?.heroCtaPrimary || 'Lihat Layanan Kami';
+const ctaSecondaryText = data?.heroCtaSecondary || 'Hubungi Kami';
+---
+
+<section class='relative pt-16 pb-20 md:pb-32 bg-slate-50'>
+  <div class='container mx-auto px-4 md:px-8 flex flex-col items-center'>
+    <div
+      class='w-full max-w-5xl h-[40vh] md:h-[60vh] overflow-hidden rounded-b-3xl md:rounded-3xl shadow-2xl relative'>
+      <img
+        src={heroImageUrl}
+        alt={`Hero Image ${brandName}`}
+        class='w-full h-full object-cover transition-transform duration-700 hover:scale-105'
+      />
+      <div class='absolute inset-0 bg-slate-900/10 mix-blend-multiply'></div>
+    </div>
+
+    <div
+      class='mt-12 md:mt-16 text-center max-w-3xl flex flex-col items-center'>
+      <h1
+        class='hero-headline text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900'
+        set:html={headline}
+      />
+
+      <p class='mt-6 text-lg md:text-xl text-slate-600 leading-relaxed'>
+        {subHeadline}
+      </p>
+
+      <div class='mt-10 flex flex-col sm:flex-row gap-4'>
+        <a
+          href='#services'
+          class='inline-flex h-12 items-center justify-center rounded-md bg-slate-900 px-8 text-sm font-medium text-slate-50 transition-colors hover:bg-slate-900/90 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2'>
+          {ctaPrimaryText}
+        </a>
+        <a
+          href='#contact'
+          class='inline-flex h-12 items-center justify-center rounded-md border border-slate-200 bg-white px-8 text-sm font-medium text-slate-900 transition-colors hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2'>
+          {ctaSecondaryText}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  /* Menangkap tag <span> yang disuntikkan oleh Sanity lewat set:html */
+  .hero-headline span {
+    color: var(--color-blue-600, #2563eb); /* Tailwind blue-600 */
+  }
+</style>

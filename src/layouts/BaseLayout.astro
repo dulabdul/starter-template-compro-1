@@ -1,6 +1,7 @@
 ---
 // Astro Frontmatter: Executes AT BUILD TIME (or server-side). 
 // No JavaScript is shipped to the client from this block.
+import '../styles/global.css';
 import { sanityClient } from '../lib/sanity';
 
 const { title = "Corporate Profile", description = "Professional services." } = Astro.props;

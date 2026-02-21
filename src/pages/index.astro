@@ -1,17 +1,28 @@
 ---
+// src/pages/index.astro
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Navbar from '@/components/layout/Navbar';
+import Services from '@/components/sections/Services.astro';
+import Contact from '@/components/sections/Contact.astro';
+import { sanityClient } from '@/lib/sanity';
+import Hero from '@/components/sections/Hero.astro';
 
+// Fetch nama perusahaan untuk Navbar
+const companyInfo = await sanityClient.fetch(
+  `*[_type == "companyInfo"][0]{ companyName }`,
+);
+const brandName = companyInfo?.companyName || 'CorpBrand.';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title='Home'>
+  <Navbar
+    companyName={brandName}
+    client:load
+  />
+
+  <main class='pt-16'>
+    <Hero />
+    <Services />
+    <Contact />
+  </main>
+</BaseLayout>
