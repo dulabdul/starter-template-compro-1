@@ -14,9 +14,16 @@ import FloatingWhatsApp from '@/components/ui/FloatingWhatsApp';
 
 // Fetch nama perusahaan untuk Navbar
 const companyInfo = await sanityClient.fetch(
-  `*[_type == "companyInfo"][0]{ companyName }`,
+  `*[_type == "companyInfo"][0]{ 
+    companyName, 
+    whatsapp, 
+    whatsappMessage 
+  }`,
 );
 const brandName = companyInfo?.companyName || 'CorpBrand.';
+const waNumber = companyInfo?.whatsapp || '1234567890';
+const waMessage =
+  companyInfo?.whatsappMessage || 'Halo! Saya tertarik dengan layanan Anda.';
 ---
 
 <BaseLayout title='Home'>
@@ -34,5 +41,9 @@ const brandName = companyInfo?.companyName || 'CorpBrand.';
     <Contact />
   </main>
   <Footer />
-  <FloatingWhatsApp client:load />
+  <FloatingWhatsApp
+    phoneNumber={waNumber}
+    message={waMessage}
+    client:load
+  />
 </BaseLayout>

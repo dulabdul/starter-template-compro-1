@@ -18,7 +18,14 @@ export default defineType({
     defineField({ name: 'mapsLink', title: 'Google Maps Embed URL', type: 'url', fieldset: 'general' }),
     defineField({ name: 'email', title: 'Contact Email', type: 'string', fieldset: 'general' }),
     defineField({ name: 'whatsapp', title: 'WhatsApp Number (Phone)', type: 'string', fieldset: 'general' }),
-
+    defineField({ 
+      name: 'whatsappMessage', 
+      title: 'WhatsApp Pre-filled Message', 
+      type: 'text', 
+      fieldset: 'general',
+      description: 'Pesan otomatis yang akan muncul saat pengunjung mengklik tombol WhatsApp.',
+      initialValue: 'Halo! Saya tertarik dengan layanan yang Anda tawarkan.'
+    }),
     // --- HERO SECTION ---
     defineField({ 
       name: 'heroImage', 
