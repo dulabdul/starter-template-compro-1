@@ -4,11 +4,11 @@ import { sanityClient } from '@/lib/sanity';
 
 // 1. Definisikan Interface
 interface SiteSettings {
-  title?: string;
   description?: string;
 }
 
 interface CompanyInfo {
+  companyName?: string; // Tambahkan ini
   email?: string;
   whatsapp?: string;
 }
@@ -20,7 +20,9 @@ const [settings, company] = await Promise.all([
 ]);
 
 // 3. Setup Fallback Variables
-const brandName = settings?.title || 'CorpBrand.';
+// Ambil brandName dari companyInfo sekarang
+const brandName = company?.companyName || 'CorpBrand.';
+
 const description =
   settings?.description ||
   'Kami menghadirkan solusi digital dan layanan profesional kelas atas untuk mengakselerasi pertumbuhan bisnis Anda di era modern.';
@@ -56,25 +58,29 @@ const currentYear = new Date().getFullYear();
             <a
               href='#about'
               class='hover:text-white transition-colors'
-              >About Us</a>
+              >About Us</a
+            >
           </li>
           <li>
             <a
               href='#services'
               class='hover:text-white transition-colors'
-              >Services</a>
+              >Services</a
+            >
           </li>
           <li>
             <a
               href='#portfolio'
               class='hover:text-white transition-colors'
-              >Portfolio</a>
+              >Portfolio</a
+            >
           </li>
           <li>
             <a
               href='#contact'
               class='hover:text-white transition-colors'
-              >Contact</a>
+              >Contact</a
+            >
           </li>
         </ul>
       </div>
