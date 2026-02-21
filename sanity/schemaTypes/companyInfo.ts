@@ -4,10 +4,11 @@ export default defineType({
   name: 'companyInfo',
   title: 'Company Information',
   type: 'document',
-  // Fieldsets membantu merapikan dashboard admin menjadi beberapa bagian
+  // Menambahkan fieldset 'contact'
   fieldsets: [
     { name: 'general', title: 'General Information' },
     { name: 'hero', title: 'Hero Section Settings' },
+    { name: 'contact', title: 'Contact Section Settings' },
   ],
   fields: [
     // --- GENERAL INFO ---
@@ -16,21 +17,20 @@ export default defineType({
     defineField({ name: 'address', title: 'Address', type: 'text', fieldset: 'general' }),
     defineField({ name: 'mapsLink', title: 'Google Maps Embed URL', type: 'url', fieldset: 'general' }),
     defineField({ name: 'email', title: 'Contact Email', type: 'string', fieldset: 'general' }),
-    defineField({ name: 'whatsapp', title: 'WhatsApp Number', type: 'string', fieldset: 'general' }),
+    defineField({ name: 'whatsapp', title: 'WhatsApp Number (Phone)', type: 'string', fieldset: 'general' }),
 
     // --- HERO SECTION ---
     defineField({ 
       name: 'heroImage', 
       title: 'Hero Image', 
       type: 'image', 
-      options: { hotspot: true }, // Memungkinkan klien mengatur titik fokus gambar
+      options: { hotspot: true },
       fieldset: 'hero' 
     }),
     defineField({ 
       name: 'heroHeadline', 
       title: 'Hero Headline', 
       type: 'string', 
-      // Memberi petunjuk ke klien cara membuat teks berwarna biru
       description: 'Gunakan tag <span> untuk teks highlight. Contoh: Membangun Masa Depan <span>Bersama Kami</span>',
       fieldset: 'hero' 
     }),
@@ -53,6 +53,22 @@ export default defineType({
       type: 'string', 
       fieldset: 'hero',
       initialValue: 'Hubungi Kami'
+    }),
+
+    // --- CONTACT SECTION ---
+    defineField({ 
+      name: 'contactHeading', 
+      title: 'Contact Heading', 
+      type: 'string', 
+      fieldset: 'contact',
+      initialValue: 'Contact us'
+    }),
+    defineField({ 
+      name: 'contactImage', 
+      title: 'Contact Image (Left Side)', 
+      type: 'image', 
+      options: { hotspot: true },
+      fieldset: 'contact' 
     }),
   ],
 })

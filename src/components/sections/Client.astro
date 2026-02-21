@@ -1,0 +1,138 @@
+---
+import { sanityClient, urlFor } from '@/lib/sanity';
+
+interface ClientsData {
+  title?: string;
+  leftBadge?: string;
+  description?: string;
+  rightBadge?: string;
+  clientLogos?: any[];
+  mainImage?: any;
+}
+
+const data = await sanityClient.fetch<ClientsData>(
+  `*[_type == "clientsSection"][0]`,
+);
+
+// Fallbacks
+const title = data?.title || 'Our Clients';
+const leftBadge = data?.leftBadge || 'Subtitle here';
+const rightBadge = data?.rightBadge || 'A Big Company with us';
+const description =
+  data?.description ||
+  'We have had the pleasure of working with a diverse range of clients, including small businesses, startups, and large corporations across various industries. We are proud to have helped these businesses achieve success through our technology solutions.';
+
+// Dummy logos (jika CMS kosong)
+const dummyLogo =
+  'https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=200&auto=format&fit=crop';
+const logos = data?.clientLogos || [
+  dummyLogo,
+  dummyLogo,
+  dummyLogo,
+  dummyLogo,
+  dummyLogo,
+];
+
+const mainImgUrl = data?.mainImage
+  ? urlFor(data.mainImage).url()
+  : 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1600&auto=format&fit=crop';
+---
+
+<section
+  id='portfolio'
+  class='py-20 md:py-32 bg-[#FAFAFA]'>
+  <div class='container mx-auto px-4 md:px-8'>
+    <div class='grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 mb-16'>
+      <div class='flex flex-col items-start'>
+        <h2
+          class='text-5xl md:text-6xl font-bold text-slate-900 tracking-tight mb-8'>
+          {title}
+        </h2>
+
+        <div
+          class='inline-block bg-[#333333] text-white px-6 py-2.5 rounded-full text-sm font-semibold mb-6'>
+          {leftBadge}
+        </div>
+
+        <div class='bg-white p-8 md:p-10 rounded-[2rem] shadow-sm w-full'>
+          <p class='text-slate-600 leading-relaxed text-lg text-justify'>
+            {description}
+          </p>
+        </div>
+      </div>
+
+      <div class='flex flex-col items-start lg:mt-[5.5rem]'>
+        <div
+          class='inline-block bg-[#333333] text-white px-6 py-2.5 rounded-full text-sm font-semibold mb-6'>
+          {rightBadge}
+        </div>
+
+        <div
+          class='bg-white p-8 md:p-10 rounded-[2rem] shadow-sm w-full overflow-hidden relative flex items-center min-h-[160px]'>
+          <div class='logo-slider flex gap-8 items-center w-max'>
+            {
+              logos.map((logo) => (
+                <img
+                  src={logo.asset ? urlFor(logo).width(200).url() : logo}
+                  alt='Client Logo'
+                  class='h-16 w-16 md:h-20 md:w-20 object-cover rounded-2xl shadow-sm'
+                />
+              ))
+            }
+            {
+              logos.map((logo) => (
+                <img
+                  src={logo.asset ? urlFor(logo).width(200).url() : logo}
+                  alt='Client Logo'
+                  class='h-16 w-16 md:h-20 md:w-20 object-cover rounded-2xl shadow-sm'
+                  aria-hidden='true'
+                />
+              ))
+            }
+          </div>
+
+          <div
+            class='absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-white to-transparent pointer-events-none'>
+          </div>
+          <div
+            class='absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-white to-transparent pointer-events-none'>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class='w-full h-[400px] md:h-[600px] rounded-[2rem] overflow-hidden shadow-xl relative'>
+      <img
+        src={mainImgUrl}
+        alt='Portfolio Main Image'
+        class='w-full h-full object-cover transition-transform duration-1000 hover:scale-105'
+      />
+      <div
+        class='absolute inset-0 grayscale mix-blend-color pointer-events-none'>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* CSS murni untuk Infinite Marquee Slider */
+  .logo-slider {
+    animation: slide 15s linear infinite;
+  }
+
+  /* Jika user mengarahkan mouse, slider berhenti agar logo bisa dilihat */
+  .logo-slider:hover {
+    animation-play-state: paused;
+  }
+
+  @keyframes slide {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      /* Bergerak ke kiri sejauh setengah dari total panjang (karena gambarnya kita duplikasi 2x) */
+      transform: translateX(-50%);
+    }
+  }
+</style>

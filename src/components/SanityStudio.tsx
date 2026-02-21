@@ -36,9 +36,13 @@ const config = defineConfig({
               .title('Services Section Config')
               .id('servicesSection')
               .child(S.document().schemaType('servicesSection').documentId('servicesSection')),
+            S.listItem()
+              .title('Clients & Portfolio Section')
+              .id('clientsSection')
+              .child(S.document().schemaType('clientsSection').documentId('clientsSection')),
             S.divider(),
             ...S.documentTypeListItems().filter(
-              (listItem) => !['siteSettings', 'companyInfo', 'aboutUs', 'culture', 'servicesSection'].includes(listItem.getId()!)
+              (listItem) => !['siteSettings', 'companyInfo', 'aboutUs', 'culture', 'servicesSection', 'clientsSection'].includes(listItem.getId()!)
             ),
           ]),
     }),

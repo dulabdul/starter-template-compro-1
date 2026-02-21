@@ -8,6 +8,9 @@ import { sanityClient } from '@/lib/sanity';
 import Hero from '@/components/sections/Hero.astro';
 import About from '@/components/sections/About.astro';
 import Cultures from '@/components/sections/Cultures.astro';
+import Client from '@/components/sections/Client.astro';
+import Footer from '@/components/layout/Footer.astro';
+import FloatingWhatsApp from '@/components/ui/FloatingWhatsApp';
 
 // Fetch nama perusahaan untuk Navbar
 const companyInfo = await sanityClient.fetch(
@@ -27,6 +30,9 @@ const brandName = companyInfo?.companyName || 'CorpBrand.';
     <About />
     <Cultures />
     <Services />
+    <Client />
     <Contact />
   </main>
+  <Footer />
+  <FloatingWhatsApp client:load />
 </BaseLayout>

@@ -1,38 +1,85 @@
 ---
 // src/components/sections/Contact.astro
-import { sanityClient } from '@/lib/sanity';
+import { sanityClient, urlFor } from '@/lib/sanity';
 
-// 1. Buat tipe data sesuai schema Sanity
 interface CompanyInfo {
-  email: string;
-  address: string;
+  contactHeading?: string;
+  contactImage?: any;
+  address?: string;
+  email?: string;
+  whatsapp?: string;
 }
 
-// 2. Fetch data (karena singleton, kita ambil index [0])
-const companyInfo = await sanityClient.fetch<CompanyInfo>(
+// Fetch data
+const data = await sanityClient.fetch<CompanyInfo>(
   `*[_type == "companyInfo"][0]`,
 );
 
-// 3. Pasang fallback jika data di Sanity masih kosong
-const email = companyInfo?.email || 'contact@corpbrand.com';
+// Fallbacks agar web tidak error jika CMS kosong
+const heading = data?.contactHeading || 'Contact us';
 const address =
-  companyInfo?.address || '123 Business Avenue, Suite 100, Metropolis';
+  data?.address || '3567 Crim Lane, Yellow Springs - Ohio (45387)';
+const email = data?.email || 'info@innovativesolutions.com';
+const phone = data?.whatsapp || '937-767-6889';
+
+const imageUrl = data?.contactImage
+  ? urlFor(data.contactImage).url()
+  : 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop'; // Dummy image cewek tersenyum
 ---
 
 <section
   id='contact'
-  class='bg-slate-100 py-24'>
-  <div class='container mx-auto px-4 text-center md:px-8'>
-    <h2 class='text-3xl font-bold text-slate-900'>Get in Touch</h2>
-    <p class='mt-6 text-slate-600'>We are here to help your business grow.</p>
+  class='py-20 md:py-32 bg-[#FAFAFA]'>
+  <div class='container mx-auto px-4 md:px-8 max-w-6xl'>
+    <div class='text-center mb-16'>
+      <h2 class='text-5xl md:text-6xl font-bold text-[#333333] tracking-tight'>
+        {heading}
+      </h2>
+    </div>
 
-    <div class='mt-8 flex flex-col items-center gap-4'>
-      <p class='text-lg font-medium'>{address}</p>
-      <a
-        href={`mailto:${email}`}
-        class='text-blue-600 hover:underline text-lg font-semibold'>
-        {email}
-      </a>
+    <div class='grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-center'>
+      <div
+        class='w-full aspect-square md:aspect-[4/5] rounded-3xl overflow-hidden shadow-lg relative'>
+        <img
+          src={imageUrl}
+          alt='Contact Us'
+          class='absolute inset-0 w-full h-full object-cover'
+        />
+      </div>
+
+      <div class='flex flex-col gap-8 md:gap-10'>
+        <div class='flex flex-col items-start gap-2'>
+          <span class='text-sm font-medium text-slate-600 pl-2'>Address</span>
+          <div
+            class='bg-[#333333] text-white px-6 py-3.5 rounded-full shadow-md w-full sm:w-max max-w-full'>
+            <p class='text-base font-medium truncate sm:whitespace-normal'>
+              {address}
+            </p>
+          </div>
+        </div>
+
+        <div class='flex flex-col items-start gap-2'>
+          <span class='text-sm font-medium text-slate-600 pl-2'>Email</span>
+          <a
+            href={`mailto:${email}`}
+            class='bg-[#333333] hover:bg-slate-900 transition-colors text-white px-6 py-3.5 rounded-full shadow-md w-full sm:w-max max-w-full'>
+            <p class='text-base font-medium truncate sm:whitespace-normal'>
+              {email}
+            </p>
+          </a>
+        </div>
+
+        <div class='flex flex-col items-start gap-2'>
+          <span class='text-sm font-medium text-slate-600 pl-2'>Phone</span>
+          <a
+            href={`tel:${phone}`}
+            class='bg-[#333333] hover:bg-slate-900 transition-colors text-white px-6 py-3.5 rounded-full shadow-md w-full sm:w-max max-w-full'>
+            <p class='text-base font-medium'>
+              {phone}
+            </p>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
