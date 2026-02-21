@@ -6,6 +6,7 @@ import Services from '@/components/sections/Services.astro';
 import Contact from '@/components/sections/Contact.astro';
 import { sanityClient } from '@/lib/sanity';
 import Hero from '@/components/sections/Hero.astro';
+import About from '@/components/sections/About.astro';
 
 // Fetch nama perusahaan untuk Navbar
 const companyInfo = await sanityClient.fetch(
@@ -22,6 +23,7 @@ const brandName = companyInfo?.companyName || 'CorpBrand.';
 
   <main class='pt-16'>
     <Hero />
+    <About />
     <Services />
     <Contact />
   </main>

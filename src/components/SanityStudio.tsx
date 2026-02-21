@@ -24,9 +24,13 @@ const config = defineConfig({
               .title('Company Information')
               .id('companyInfo')
               .child(S.document().schemaType('companyInfo').documentId('companyInfo')),
+            S.listItem()
+              .title('About Us Section')
+              .id('aboutUs')
+              .child(S.document().schemaType('aboutUs').documentId('aboutUs')),
             S.divider(),
             ...S.documentTypeListItems().filter(
-              (listItem) => !['siteSettings', 'companyInfo'].includes(listItem.getId()!)
+              (listItem) => !['siteSettings', 'companyInfo', 'aboutUs'].includes(listItem.getId()!)
             ),
           ]),
     }),
