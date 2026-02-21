@@ -1,0 +1,91 @@
+---
+import { sanityClient, urlFor } from '@/lib/sanity';
+
+interface ValueItem {
+  title: string;
+  text: string;
+}
+
+interface CultureData {
+  heading?: string;
+  description?: string;
+  valuesList?: ValueItem[];
+  founderImage?: any;
+}
+
+const data = await sanityClient.fetch<CultureData>(`*[_type == "culture"][0]`);
+
+// Fallbacks Data
+const heading = data?.heading || 'Our Culture & Values';
+const description =
+  data?.description ||
+  'At the core of our company, we believe in fostering an environment where innovation thrives, integrity guides our actions, and excellence is the standard in everything we deliver to our clients.';
+
+const valuesList = data?.valuesList || [
+  {
+    title: 'Innovation First',
+    text: 'We constantly push boundaries and explore new technologies to find better, more efficient solutions.',
+  },
+  {
+    title: 'Unwavering Integrity',
+    text: 'We believe in transparency, honesty, and doing the right thing, even when no one is watching.',
+  },
+  {
+    title: 'Commitment to Excellence',
+    text: "We don't settle for 'good enough'. We strive for outstanding results in every project.",
+  },
+];
+
+// Dummy gambar portrait (jika CMS belum diisi)
+const imageUrl = data?.founderImage
+  ? urlFor(data.founderImage).url()
+  : 'https://images.unsplash.com/photo-1556761175-4b46a572b786?q=80&w=1000&auto=format&fit=crop';
+---
+
+<section class='py-20 md:py-32 bg-white'>
+  <div class='container mx-auto px-4 md:px-8'>
+    <div class='grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-stretch'>
+      <div class='flex flex-col justify-center py-8'>
+        <h2
+          class='text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-8'>
+          {heading}
+        </h2>
+
+        <div class='flex flex-col gap-6 mb-10'>
+          {
+            valuesList.map((val, index) => (
+              <div class='flex items-start gap-4'>
+                <div class='flex-shrink-0 w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-900 font-bold text-lg'>
+                  0{index + 1}
+                </div>
+                <div>
+                  <h3 class='text-xl font-bold text-slate-900 mb-1'>
+                    {val.title}
+                  </h3>
+                  <p class='text-slate-600 leading-relaxed'>{val.text}</p>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+
+        <p
+          class='text-lg text-slate-600 leading-relaxed border-l-4 border-blue-600 pl-6 py-2 bg-slate-50/50'>
+          {description}
+        </p>
+      </div>
+
+      <div
+        class='relative min-h-[400px] lg:min-h-full rounded-[2rem] overflow-hidden shadow-2xl'>
+        <img
+          src={imageUrl}
+          alt='Founder & Team Culture'
+          class='absolute inset-0 w-full h-full object-cover transition-transform duration-1000 hover:scale-105'
+        />
+        <div
+          class='absolute inset-0 bg-gradient-to-t from-slate-900/30 to-transparent'>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

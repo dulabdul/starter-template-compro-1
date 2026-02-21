@@ -1,53 +1,84 @@
 ---
-import { Card, CardHeader, CardTitle, CardContent } from '../ui/card';
-import { sanityClient } from '../../lib/sanity';
+import { sanityClient, urlFor } from '@/lib/sanity';
 
-// 1. Define the TypeScript interface matching your Sanity schema
-interface Service {
-  title: string;
-  description: string;
-  icon?: string; // Optional, since your fallback data doesn't use it
-  order?: number; // Optional
+// 1. Interface untuk Global Info
+interface SectionInfo {
+  heading: string;
+  bottomText: string;
 }
 
-// 2. Apply the generic type <Service[]> to the Sanity fetch call
-const services = await sanityClient.fetch<Service[]>(
-  `*[_type == "service"] | order(order asc)`,
-);
+// 2. Interface untuk individual Service Item
+interface ServiceItem {
+  title: string;
+  image?: any;
+  order?: number;
+}
 
-// 3. Explicitly type the fallback array
-const displayServices: Service[] =
+// 3. Fetch Data secara parallel
+const [sectionInfo, services] = await Promise.all([
+  sanityClient.fetch<SectionInfo>(`*[_type == "servicesSection"][0]`),
+  sanityClient.fetch<ServiceItem[]>(`*[_type == "service"] | order(order asc)`),
+]);
+
+// 4. Set Fallbacks
+const heading = sectionInfo?.heading || 'What we do?';
+const bottomText =
+  sectionInfo?.bottomText ||
+  'Our services are tailored to meet the unique needs of each client, ensuring that we deliver effective solutions that help businesses grow.';
+
+// Fallback dummy data jika user belum input service di CMS
+const displayServices: ServiceItem[] =
   services.length > 0
     ? services
     : [
-        { title: 'Consulting', description: 'Expert corporate strategy.' },
-        { title: 'Development', description: 'Scalable software solutions.' },
-        { title: 'Marketing', description: 'Data-driven growth.' },
+        { title: 'Web Design-<br/>& Development', image: null },
+        { title: 'Mobile App-<br/>Development', image: null },
+        { title: 'Software-<br/>Development', image: null },
+        { title: 'Digital-<br/>Marketing', image: null },
       ];
+
+// Dummy placeholder dari Unsplash jika klien belum upload gambar
+const dummyImg =
+  'https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=800&auto=format&fit=crop';
 ---
 
 <section
   id='services'
-  class='container mx-auto px-4 py-24 md:px-8'>
-  <div class='mb-12 text-center'>
-    <h2 class='text-3xl font-bold tracking-tight sm:text-4xl text-slate-900'>
-      Our Services
-    </h2>
-    <p class='mt-4 text-slate-600'>Delivering excellence across industries.</p>
-  </div>
+  class='py-24 bg-[#FAFAFA]'>
+  <div class='container mx-auto px-4 md:px-8'>
+    <div class='mb-16 text-center'>
+      <h2 class='text-4xl md:text-5xl font-bold tracking-tight text-slate-900'>
+        {heading}
+      </h2>
+    </div>
 
-  <div class='grid grid-cols-1 gap-6 md:grid-cols-3'>
-    {
-      displayServices.map((service) => (
-        <Card className='shadow-sm hover:shadow-md transition-shadow'>
-          <CardHeader>
-            <CardTitle className='text-xl'>{service.title}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p class='text-slate-600'>{service.description}</p>
-          </CardContent>
-        </Card>
-      ))
-    }
+    <div class='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>
+      {
+        displayServices.map((service) => (
+          <div class='relative w-full aspect-[4/5] rounded-[2rem] overflow-hidden group shadow-md cursor-pointer'>
+            <img
+              src={service.image ? urlFor(service.image).url() : dummyImg}
+              alt='Service Image'
+              class='absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110'
+            />
+
+            <div class='absolute inset-0 bg-black/10 transition-colors group-hover:bg-black/20' />
+
+            <div class='absolute bottom-5 left-5 right-5 xl:bottom-6 xl:left-6 xl:right-6'>
+              <div class='inline-block bg-[#333333]/95 backdrop-blur-sm border border-white/30 text-white px-5 py-3 rounded-[1.2rem] text-lg font-medium leading-snug shadow-lg'>
+                <span set:html={service.title} />
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <div
+      class='mt-16 max-w-4xl mx-auto bg-white rounded-3xl p-8 md:p-10 shadow-sm border border-slate-100 text-center'>
+      <p class='text-slate-700 text-lg leading-relaxed'>
+        {bottomText}
+      </p>
+    </div>
   </div>
 </section>

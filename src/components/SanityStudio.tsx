@@ -28,9 +28,17 @@ const config = defineConfig({
               .title('About Us Section')
               .id('aboutUs')
               .child(S.document().schemaType('aboutUs').documentId('aboutUs')),
+            S.listItem()
+              .title('Culture & Values Section')
+              .id('culture')
+              .child(S.document().schemaType('culture').documentId('culture')),
+            S.listItem()
+              .title('Services Section Config')
+              .id('servicesSection')
+              .child(S.document().schemaType('servicesSection').documentId('servicesSection')),
             S.divider(),
             ...S.documentTypeListItems().filter(
-              (listItem) => !['siteSettings', 'companyInfo', 'aboutUs'].includes(listItem.getId()!)
+              (listItem) => !['siteSettings', 'companyInfo', 'aboutUs', 'culture', 'servicesSection'].includes(listItem.getId()!)
             ),
           ]),
     }),
